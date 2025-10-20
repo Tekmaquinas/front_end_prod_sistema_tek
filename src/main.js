@@ -267,10 +267,10 @@ app.directive('styleclass', StyleClass)
 
 // const base_url = 'http://localhost:80';
 
-const base_url_ofertas = 'http://localhost:81';
+// const base_url_ofertas = 'http://localhost:81';
 
 const base_devolucoes = 'https://basetekmaquinas.squareweb.app';
-// const base_url_ofertas = 'https://apitekmaquinasstock.squareweb.app';
+const base_url_ofertas = 'https://apitekmaquinasstock.squareweb.app';
 const base_url = 'https://apitekmaquinas.squareweb.app';
 
 
@@ -282,4 +282,5 @@ app.provide('base_url_devolucoes', base_devolucoes)
 app.use(router);
 
 // Montando a aplicação
+
 app.mount('#app');
