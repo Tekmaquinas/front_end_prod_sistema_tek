@@ -1,0 +1,305 @@
+
+
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  --p-primary-color: black !important;
+  color-scheme: light;
+
+  background-color: #e7e7e762;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  width: 100%;
+  height: 10dvh;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+/* button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+} */
+
+.card {
+  padding: 2em;
+}
+
+/* Defina o tamanho da altura para 100vh para ocupar toda a tela */
+#app {
+  width: 100% !important;
+  height: 100vh !important;/* Faz com que o #app ocupe toda a altura da tela do navegador */
+  margin: 0 auto !important;
+}
+
+/* Garantindo que o body e html ocupem 100% da altura da tela */
+html, body {
+  height: 100% !important;
+  margin: 0!important;
+}
+
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+
+
+p {
+  margin-block: 0rem !important;
+}
+
+
+
+.out_stock {
+  background-color: rgba(255, 0, 0, 0.183) !important;
+  color: rgb(153, 0, 0) !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+}
+
+.refunded {
+  background-color: rgba(255, 0, 0, 0.135) !important;
+  color: rgb(153, 0, 0) !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+
+}
+
+.order_encomenda {
+  background-color: rgba(255, 213, 0, 0.183) !important;
+  color: rgb(153, 77, 0) !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+}
+
+.concluido {
+  background-color: rgba(0, 255, 47, 0.183) !important;
+  color: rgb(0, 112, 7) !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+}
+
+.icon_status_pendente {
+  background-color: rgba(0, 204, 255, 0.183) !important;
+  color: rgb(0, 87, 153) !important;
+  border-radius: 10px !important;
+  padding: 5px;
+  font-size: 0.8rem !important;
+}
+
+.status-tag {
+  border-radius: 10px !important;
+  padding: 5px;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+}
+
+.status-1 {
+  background-color: rgba(32, 210, 255, 0.127) !important;
+  color: rgb(0, 87, 153) !important;
+}
+
+
+.status-2 {
+  background-color: rgba(0, 30, 255, 0.119) !important;
+  color: rgb(61, 0, 153)!important;
+
+}
+
+.status-3 {
+  background-color: rgba(255, 213, 0, 0.183) !important;
+  color: rgb(153, 77, 0) !important;
+}
+
+
+.status-4 {
+  background-color: rgba(0, 255, 47, 0.183) !important;
+  color: rgb(0, 112, 7) !important;
+
+}
+
+.status-5 {
+  background-color: rgba(255, 0, 0, 0.183) !important;
+  color: rgb(153, 0, 0) !important;
+}
+
+.status-6 {
+  background-color: rgba(152, 152, 152, 0.183) !important;
+  color: rgb(77, 77, 77) !important;
+}
+
+.status-7 {
+  background-color: rgba(152, 152, 152, 0.183) !important;
+  color: rgb(77, 77, 77) !important;
+
+}
+
+.badge-success {
+  color: rgba(0, 114, 55, 0.641) !important;
+  background-color: rgba(0, 187, 78, 0.085) !important;
+}
+
+.badge-info {
+  color: rgba(0, 0, 114, 0.871) !important;
+  background-color: rgba(0, 115, 187, 0.085) !important;
+}
+
+.text-orange-500 {
+  color: rgb(255, 107, 33) !important;
+  font-weight: 900 !important;
+}
+
+.column_comment {
+  min-width: 150px !important; 
+  max-width: 360px !important; 
+  
+}
+
+.column_border_right {
+  border-right: solid 1px rgb(211, 211, 211) !important;
+}
+
+.column_border_left {
+  border-left: solid 1px rgb(211, 211, 211) !important;
+}
+
+.card_prices {
+  box-shadow: 5px 2px 20px rgba(128, 128, 128, 0.113) !important;
+  margin: 5px 0px;
+}
+
+.truncate-text {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 5 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+/* Primary and Surface Palettes */
+:root {
+  --p-primary-50: var(--p-surface-50)!important ;
+  --p-primary-100: var(--p-surface-100)!important ;
+  --p-primary-200: var(--p-surface-200)!important ;
+  --p-primary-300: var(--p-surface-300)!important ;
+  --p-primary-400: var(--p-surface-400)!important ;
+  --p-primary-500: var(--p-surface-500)!important ;
+  --p-primary-600: var(--p-surface-600)!important ;
+  --p-primary-700: var(--p-surface-700)!important ;
+  --p-primary-800: var(--p-surface-800)!important ;
+  --p-primary-900: var(--p-surface-900)!important ;
+  --p-primary-950: var(--p-surface-950)!important ;
+  --p-surface-0: #ffffff!important ;
+  --p-surface-50: #f8fafc!important ;
+  --p-surface-100: #f1f5f9!important ;
+  --p-surface-200: #e2e8f0!important ;
+  --p-surface-300: #cbd5e1!important ;
+  --p-surface-400: #94a3b8!important ;
+  --p-surface-500: #64748b!important ;
+  --p-surface-600: #475569!important ;
+  --p-surface-700: #334155!important ;
+  --p-surface-800: #1e293b!important ;
+  --p-surface-900: #0f172a!important ;
+  --p-surface-950: #020617!important ;
+  --p-content-border-radius: 6px!important ;
+}
+
+/* Light Mode */
+:root {
+  --p-primary-color: var(--p-primary-950)!important ;
+  --p-primary-contrast-color: var(--p-surface-0)!important ;
+  --p-primary-hover-color: var(--p-primary-600)!important ;
+  --p-primary-active-color: var(--p-primary-700)!important ;
+  --p-content-border-color: var(--p-surface-200)!important ;
+  --p-content-hover-background: var(--p-surface-100)!important ;
+  --p-content-hover-color: var(--p-surface-800)!important ;
+  --p-highlight-background: var(--p-primary-50)!important ;
+  --p-highlight-color: var(--p-primary-700)!important ;
+  --p-highlight-focus-background: var(--p-primary-100)!important ;
+  --p-highlight-focus-color: var(--p-primary-800)!important ;
+  --p-text-color: var(--p-surface-700)!important ;
+  --p-text-hover-color: var(--p-surface-800)!important ;
+  --p-text-muted-color: var(--p-surface-500)!important ;
+  --p-text-hover-muted-color: var(--p-surface-600)!important ;
+}
+
+/* 
+* Dark Mode
+* Change the .p-dark to match the darkMode in tailwind.config.
+* For example!important ; 
+*  darkMode: ['selector', '[class*="app-dark"]'] 
+*  should match!important ;
+* :root.app-dark
+*/
+:root.p-dark {
+  --p-primary-color: var(--p-primary-400)!important ;
+  --p-primary-contrast-color: var(--p-surface-900)!important ;
+  --p-primary-hover-color: var(--p-primary-300)!important ;
+  --p-primary-active-color: var(--p-primary-200)!important ;
+  --p-content-border-color: var(--p-surface-700)!important ;
+  --p-content-hover-background: var(--p-surface-800)!important ;
+  --p-content-hover-color: var(--p-surface-0)!important ;
+  --p-highlight-background: color-mix(in srgb, var(--p-primary-400), transparent 84%)!important ;
+  --p-highlight-color: rgba(255,255,255,.87)!important ;
+  --p-highlight-focus-background: color-mix(in srgb, var(--p-primary-400), transparent 76%)!important ;
+  --p-highlight-focus-color: rgba(255,255,255,.87)!important ;
+  --p-text-color: var(--p-surface-0)!important ;
+  --p-text-hover-color: var(--p-surface-0)!important ;
+  --p-text-muted-color: var(--p-surface-400)!important ;
+  --p-text-hover-muted-color: var(--p-surface-300)!important ;
+}
