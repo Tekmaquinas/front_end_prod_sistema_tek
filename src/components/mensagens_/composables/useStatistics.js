@@ -13,10 +13,6 @@ export function useStatistics() {
   
   // Cores para os status
   const statusColors = {
-    urgente: '#FF6384',
-    atencao: '#FFCE56',
-    info: '#36A2EB',
-    manual: '#9966FF',
     finalizado: '#4BC0C0',
     pendente: '#FF9F40',
     operador: '#C9CBCF'

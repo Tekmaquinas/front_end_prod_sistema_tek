@@ -47,10 +47,10 @@ const leftItems = ref([
 
                 ],
             },
-            {
-                label: 'Ofertas',
-                command: () =>router.push('/offers/leroy/')
-            },
+            // {
+            //     label: 'Ofertas',
+            //     command: () =>router.push('/offers/leroy/')
+            // },
             
             { 
               label: 'Mensagens', icon: 'pi pi-envelope', 

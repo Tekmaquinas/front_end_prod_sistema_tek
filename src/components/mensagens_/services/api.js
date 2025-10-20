@@ -3,8 +3,8 @@
  */
 
 // Base URL da API de mensagens
-const BASE_URL = 'https://backmessages.squareweb.app';
-const API_BASE_URL = 'https://backmessages.squareweb.app';
+const BASE_URL = 'https://backmessages.squareweb.app/';
+const API_BASE_URL = 'https://backmessages.squareweb.app/';
 
 // Token fixo de autenticação - não precisa de login
 const TOKEN_FIXO = 'ef9354cc8b5f6aec770636e6bce6ca85001ae47c';
@@ -206,16 +206,19 @@ const ChatService = {
     if (params.pageSize) queryParams.append('page_size', params.pageSize);
     if (params.marketplace) queryParams.append('marketplace', params.marketplace);
     if (params.status) queryParams.append('status', params.status);
+    if (params.exclude_status) queryParams.append('exclude_status', params.exclude_status);
     if (params.startDate) queryParams.append('start_date', params.startDate);
     if (params.endDate) queryParams.append('end_date', params.endDate);
     if (params.stateMarketplace) queryParams.append('state_marketplace', params.stateMarketplace);
     if (params.clientName) queryParams.append('client_name', params.clientName);
     if (params.clientId) queryParams.append('client_id', params.clientId);
     if (params.notific !== undefined) queryParams.append('notific', params.notific);
-    if (params.alert) queryParams.append('alert', params.alert);
+    if (params.alert !== undefined) queryParams.append('alert', params.alert);
     if (params.seen) queryParams.append('seen', params.seen);
 
     const url = `${CHATS_ENDPOINTS.LIST}${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+    
+    console.log("URL da requisição:", url);
     
     try {
       const response = await fetch(url, {
@@ -248,7 +251,7 @@ const ChatService = {
     
     if (params.page) queryParams.append('page', params.page);
     if (params.pageSize) queryParams.append('page_size', params.pageSize);
-    // if (params.marketplace) queryParams.append('marketplace', params.marketplace);
+    if (params.marketplace) queryParams.append('marketplace', params.marketplace);
     
     const query = queryParams.toString() ? `?${queryParams.toString()}` : '';
     const url = `${CHATS_ENDPOINTS.SEARCH(searchTerm)}${query}`;

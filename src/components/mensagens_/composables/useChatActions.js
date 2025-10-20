@@ -14,10 +14,7 @@ export function useChatActions(options = {}) {
   } = options;
   
   // Constantes para status de chat
-  const CHAT_STATUS = {
-    URGENTE: 'urgente',
-    ATENCAO: 'atencao',
-    INFO: 'info', 
+  const CHAT_STATUS = { 
     PENDENTE: 'pendente',
     FINALIZADO: 'finalizado',
     OPERADOR: 'operador'
@@ -25,9 +22,6 @@ export function useChatActions(options = {}) {
   
   // Opções de status disponíveis
   const statusOptions = [
-    { label: "Urgente", value: CHAT_STATUS.URGENTE, severity: "danger" },
-    { label: "Atenção", value: CHAT_STATUS.ATENCAO, severity: "warning" },
-    { label: "Info", value: CHAT_STATUS.INFO, severity: "info" },
     { label: "Pendente", value: CHAT_STATUS.PENDENTE, severity: "warning" },
     { label: "Finalizado", value: CHAT_STATUS.FINALIZADO, severity: "success" },
     { label: "Operador", value: CHAT_STATUS.OPERADOR, severity: "info" },

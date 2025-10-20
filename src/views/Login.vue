@@ -118,8 +118,6 @@ const login = async (values) => {
     formData.append('password', values.values.password);
 
     try {
-        let response
-        
         await fetch(`${base_url_ofertas}/v1/membros/login`, {
             method: 'POST',
             body: formData,
@@ -127,7 +125,7 @@ const login = async (values) => {
             mode:'cors'
         });
 
-        response = await fetch(`${base_url_devolucoes}/v1/membros/login`, {
+        await fetch(`${base_url_devolucoes}/v1/membros/login`, {
             method: 'POST',
             body: formData,
             credentials: 'include',
@@ -135,7 +133,7 @@ const login = async (values) => {
         });
 
 
-        response = await fetch(`${base_url}/member/login`, {
+        const response = await fetch(`${base_url}/member/login`, {
             method: 'POST',
             body: formData,
             credentials: 'include',
@@ -175,6 +173,5 @@ const login = async (values) => {
 };
 
 </script>
-
 
 

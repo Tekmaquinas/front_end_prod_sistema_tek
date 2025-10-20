@@ -282,5 +282,4 @@ app.provide('base_url_devolucoes', base_devolucoes)
 app.use(router);
 
 // Montando a aplicação
-
 app.mount('#app');

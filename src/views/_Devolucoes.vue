@@ -1,356 +1,362 @@
 <template>
     <toolbar />
-    <div class="bg-white m-0 w-full flex flex-col p-1 pt-0" style="height: 70vh;">
-        <Toast />
-        <ConfirmPopup />
-      <div class="flex flex-col gap-4 mb-2"> 
-        <div v-if="isProgressVisible" class="mb-5 w-full">
-          <ProgressBar :value="progressValue" />
-          <div class="text-center mt-2 text-sm text-green-500 font-bold">
-            Processando devoluções... {{progressValue}}%
+    <div class="bg-white m-0 min-h-screen w-full flex flex-col p-4 pt-0">
+      <Toast />
+      <ConfirmPopup />
+      <div class="flex flex-col gap-4 mb-2" /> 
+      <div v-if="isProgressVisible" class="mb-5 w-full">
+        <ProgressBar :value="progressValue" />
+        <div class="text-center mt-2 text-sm text-green-500 font-bold">
+          Processando devoluções... {{progressValue}}%
+        </div>
+      </div>
+  
+      <div class="table-container flex-1 w-full h-full">
+        <div class="flex justify-between items-center w-full mb-4">
+          <div class="flex items-center relative w-[370px]">
+            <IconField>
+              <InputIcon>
+                <i class="pi pi-search" />
+              </InputIcon>
+              <InputText v-model="filters['global'].value" placeholder="Pesquisar" />
+            </IconField>
+          </div>
+          <div class="flex items-center">
+            <Button v-if="selectedReturns.length > 0" label="Apagar" icon="pi pi-trash" class="p-button-danger  ml-2" size="small" rounded
+            @click="DeleteSelectedReturns"
+            />
+            <Button label="Adicionar" icon="pi pi-plus" class="p-button-success  ml-2"  size="small" rounded
+            @click="showCreateModal" 
+            />
+            
+            <Button label="Exportar Relatório" icon="pi pi-file-excel" class="p-button-help  ml-2" size="small" rounded
+            @click="exportCSV" 
+            />
+            <Button icon="pi pi-refresh" class=" ml-2 bg-black border-none"  size="small" rounded
+            @click="refresh" 
+            />
           </div>
         </div>
-    
-        <div class="table-container flex-1 w-full h-full">
-          <div class="flex justify-between items-center w-full mb-4">
-            <div class="flex items-center relative w-[370px]">
-              <IconField>
-                <InputIcon>
-                  <i class="pi pi-search" />
-                </InputIcon>
-                <InputText v-model="filters['global'].value" placeholder="Pesquisar" />
-              </IconField>
-            </div>
-            <div class="flex items-center">
-              <Button v-if="selectedReturns.length > 0" label="Apagar" icon="pi pi-trash" class="p-button-danger  ml-2" size="small" rounded
-              @click="DeleteSelectedReturns"
-              />
-              <Button label="Adicionar" icon="pi pi-plus" class="p-button-success  ml-2"  size="small" rounded
-              @click="showCreateModal" 
-              />
-              
-              <Button label="Exportar Relatório" icon="pi pi-file-excel" class="p-button-help  ml-2" size="small" rounded
-              @click="exportCSV" 
-              />
-              <Button icon="pi pi-refresh" class=" ml-2 bg-black border-none"  size="small" rounded
-              @click="refresh" 
-              />
-            </div>
-          </div>
-          <!-- Tabela -->
-          <DataTable 
-            showGridlines
-            removableSort
+        <!-- Tabela -->
+        <DataTable 
+          showGridlines
+          removableSort
 
-            v-model:selection="selectedReturns" 
-            
-            paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
-            filterDisplay="menu"
-            editMode="cell"
-            dataKey="id"
-            size="small"
-              resizableColumns columnResizeMode="expand"
-            :value="returns"
-            :filters="filters"
-            :loading="loading"
-            scrollable scrollHeight="calc(100vh - 140px)"
-            @cell-edit-complete="onCellEditComplete"
-            
-            >
-    
-            <!-- Coluna de seleção -->
-            <Column selectionMode="multiple" headerStyle="width: 1rem" />
-            
-            <!-- Order ID -->
-            <Column field="order_id" header="Order ID" headerStyle="min-width: 8.5rem;" style="min-width: 8.5rem;">
-                <template #body="{data, field}">
-                    <div class="flex flex-col gap-0">
-                        <div class="font-bold">{{ data[field] }}</div>
-                    </div>
-                </template>
-                <template #editor="{ data, field }">
-                    <InputText v-model="data[field]"  class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()" style="border: none !important; box-shadow: none;"/>
-                </template>
-            </Column>
-    
-            <!-- Origem -->
-            <Column field="origem" header="Origem" headerStyle="min-width: 8.5rem;" style="min-width: 8.5rem;">
-                <template #body="{data, field}">
-                    <span class="truncate">{{ data[field] || '' }}</span>
-                </template>
-                <template #editor="{ data, field }">
-                    <InputText v-model="data[field]" autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
-                </template>  
-            </Column>
+          v-model:selection="selectedReturns" 
           
-            <!-- Atualização -->
-            <Column field="trackingStatus" header="Status Tracking" headerStyle="min-width: 8.5rem;" style="min-width: 8.5rem;">
-              <template #body="{data, field}">
-                  <Tag v-if="data[field]" class="p-0.5 truncate" :value="data[field]" :severity="getTrackingStatusSeverity(data[field])" />
-                  <span v-else class="text-gray-400"></span>
-              </template>
-              <template #editor="{ data, field }">
-                <InputText v-model="data[field]" autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
-              </template> 
-            </Column>
-            
-            <!-- Tracking -->
-            <Column field="trackingNumber" header="Tracking" headerStyle="min-width: 8.5rem;" style="min-width: 8.5rem;">
-              <template #body="{data, field}">
-                <div class="font-medium truncate">{{ data[field] || '' }}</div>
-              </template>
-              <template #editor="{ data, field }">
-                <InputText v-model="data[field]" autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
-              </template>
-            </Column>
-    
-            <!-- Valor -->
-            <Column field="valorProduto" header="Valor" headerStyle="min-width: 5.5rem;" style="min-width: 5.5rem;">
-              <template #body="{data, field}">
-                <div class="font-bold">{{ formatCurrency(data[field]) || '' }}</div>
-              </template>
-              <template #editor="{ data, field }">
-                <InputNumber v-model="data[field]" class="w-full input-cursor p-0.5" inputId="currency-germany"  
-                    autofocus 
-                    mode="currency" 
-                    currency="EUR" 
-                    @keydown.enter="$event.target.blur()" />
-              </template>
-            </Column>
+          paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+          currentPageReportTemplate="{first}-{last}/{totalRecords}"
+          filterDisplay="menu"
+          editMode="cell"
+          dataKey="id"
+          size="small"
+            resizableColumns columnResizeMode="expand"
+          :value="returns"
+          :filters="filters"
+          :virtualScrollerOptions="{ itemSize: 24 }"
+          :loading="loading"
+          :paginator="true" 
+          :rows="100"
+          :rowsPerPageOptions="[5,10,25,50]"
           
-            <!-- Banco -->
-            <Column field="bankName" header="Banco" headerStyle="width: 2.5rem;" style="min-width: 8.5rem;">
+          
+          @cell-edit-complete="onCellEditComplete"
+          
+          >
+  
+          <!-- Coluna de seleção -->
+          <Column selectionMode="multiple" headerStyle="width: 1rem" />
+          
+          <!-- Order ID -->
+          <Column field="order_id" header="Order ID" headerStyle="min-width: 8.5rem;" style="min-width: 8.5rem;">
               <template #body="{data, field}">
-                <Tag v-if="data[field]" class="p-0.5 truncate" :value="data[field]" icon="pi pi-building" severity="info"/>
+                  <div class="flex flex-col gap-0">
+                      <div class="font-bold">{{ data[field] }}</div>
+                  </div>
+              </template>
+              <template #editor="{ data, field }">
+                  <InputText v-model="data[field]"  autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
+              </template>
+          </Column>
+  
+          <!-- Origem -->
+          <Column field="origem" header="Origem" headerStyle="min-width: 8.5rem;" style="min-width: 8.5rem;">
+              <template #body="{data, field}">
+                  <span class="truncate">{{ data[field] || '' }}</span>
+              </template>
+              <template #editor="{ data, field }">
+                  <InputText v-model="data[field]" autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
+              </template>  
+          </Column>
+        
+          <!-- Atualização -->
+          <Column field="trackingStatus" header="Status Tracking" headerStyle="min-width: 8.5rem;" style="min-width: 8.5rem;">
+            <template #body="{data, field}">
+                <Tag v-if="data[field]" class="p-0.5 truncate" :value="data[field]" :severity="getTrackingStatusSeverity(data[field])" />
                 <span v-else class="text-gray-400"></span>
-              </template>
-              <template #editor="{ data, field }">
-                <InputText v-model="data[field]" autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
-              </template>
-            </Column>
-    
-            <!-- Motivo da Devolução -->
-            <Column field="motivoDevolucao" header="Motivo de Devolução" headerStyle="max-width: 460px; min-width: 260px">
-              <template #body="{data, field}">
-                <div class="whitespace-pre-wrap break-words word-break-all p-2 text-wrap"
-                    style="min-width: 300px; max-width: 600px; box-sizing: border-box; overflow-wrap: anywhere;">
-                    {{ data[field] || '' }}
-                </div>
-              </template>
-              <template #editor="{ data, field }">
-                <Textarea v-model="data[field]" class="w-full input-cursor p-0.3"  placeholder="Motivo" rows="1" cols="30" autoResize autofocus 
-                    @keydown.enter.exact.prevent="() => {}" 
-                    @keydown.enter.shift.exact="$event.target.blur()" />
-              </template>
-            </Column>
-    
-            <!-- Comentários -->
-            <Column field="Comments" header="Comentários" headerStyle="max-width: 460px; min-width: 260px">
-              <template #body="{data, field}">
-                <div class="whitespace-pre-wrap break-words word-break-all overflow-y-auto p-2 text-wrap"
-                    style="min-width: 300px; max-width: 600px; max-height: 150px; box-sizing: border-box; overflow-wrap: anywhere;">
-                    {{ data[field] || '' }}
-                </div>
-              </template>
-              <template #editor="{ data, field }">
-                <Textarea v-model="data[field]" autoResize rows="1" cols="12" placeholder="Digite" autofocus class="w-full input-cursor p-0.3" 
-                  style=" width: 100%; overflow-wrap: anywhere; word-break: break-all; box-sizing: border-box;"
+            </template>
+            <template #editor="{ data, field }">
+              <InputText v-model="data[field]" autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
+            </template> 
+          </Column>
+          
+          <!-- Tracking -->
+          <Column field="trackingNumber" header="Tracking" headerStyle="min-width: 8.5rem;" style="min-width: 8.5rem;">
+            <template #body="{data, field}">
+              <div class="font-medium truncate">{{ data[field] || '' }}</div>
+            </template>
+            <template #editor="{ data, field }">
+              <InputText v-model="data[field]" autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
+            </template>
+          </Column>
+  
+          <!-- Valor -->
+          <Column field="valorProduto" header="Valor" headerStyle="min-width: 5.5rem;" style="min-width: 5.5rem;">
+            <template #body="{data, field}">
+              <div class="font-bold">{{ formatCurrency(data[field]) || '' }}</div>
+            </template>
+            <template #editor="{ data, field }">
+              <InputNumber v-model="data[field]" class="w-full input-cursor p-0.5" inputId="currency-germany"  
+                  autofocus 
+                  mode="currency" 
+                  currency="EUR" 
+                  @keydown.enter="$event.target.blur()" />
+            </template>
+          </Column>
+        
+          <!-- Banco -->
+          <Column field="bankName" header="Banco" headerStyle="width: 2.5rem;" style="min-width: 8.5rem;">
+            <template #body="{data, field}">
+              <Tag v-if="data[field]" class="p-0.5 truncate" :value="data[field]" icon="pi pi-building" severity="info"/>
+              <span v-else class="text-gray-400"></span>
+            </template>
+            <template #editor="{ data, field }">
+              <InputText v-model="data[field]" autofocus class="w-full input-cursor p-0.5" @keydown.enter="$event.target.blur()"/>
+            </template>
+          </Column>
+  
+          <!-- Motivo da Devolução -->
+          <Column field="motivoDevolucao" header="Motivo de Devolução" headerStyle="max-width: 460px; min-width: 260px">
+            <template #body="{data, field}">
+              <div class="whitespace-pre-wrap break-words word-break-all p-2 text-wrap"
+                  style="min-width: 300px; max-width: 600px; box-sizing: border-box; overflow-wrap: anywhere;">
+                  {{ data[field] || '' }}
+              </div>
+            </template>
+            <template #editor="{ data, field }">
+              <Textarea v-model="data[field]" class="w-full input-cursor p-0.3"  placeholder="Motivo" rows="1" cols="30" autoResize autofocus 
                   @keydown.enter.exact.prevent="() => {}" 
                   @keydown.enter.shift.exact="$event.target.blur()" />
-              </template>
-            </Column>
+            </template>
+          </Column>
+  
+          <!-- Comentários -->
+          <Column field="Comments" header="Comentários" headerStyle="max-width: 460px; min-width: 260px">
+            <template #body="{data, field}">
+              <div class="whitespace-pre-wrap break-words word-break-all overflow-y-auto p-2 text-wrap"
+                  style="min-width: 300px; max-width: 600px; max-height: 150px; box-sizing: border-box; overflow-wrap: anywhere;">
+                  {{ data[field] || '' }}
+              </div>
+            </template>
+            <template #editor="{ data, field }">
+              <Textarea v-model="data[field]" autoResize rows="1" cols="12" placeholder="Digite" autofocus class="w-full input-cursor p-0.3" 
+                style=" width: 100%; overflow-wrap: anywhere; word-break: break-all; box-sizing: border-box;"
+                @keydown.enter.exact.prevent="() => {}" 
+                @keydown.enter.shift.exact="$event.target.blur()" />
+            </template>
+          </Column>
+  
+          <!-- Resolução -->
+          <Column field="resolucao" header="Resolução" headerStyle="max-width: 460px; min-width: 260px" style="width: 2.5rem;">
+            <template #body="{data, field}">
+              <div class="text-3xs text-gray-500">{{ data[field] || '' }}</div>
+            </template>
+            <template #editor="{ data, field }">
+              <Textarea v-model="data[field]" autofocus autoResize class="w-full input-cursor text-3xs"rows="1"cols="12" 
+                style=" width: 100%; overflow-wrap: anywhere; word-break: break-all; box-sizing: border-box;"
+                placeholder="Digite" 
+                @keydown.enter="$event.target.blur()"/>
+            </template>
+          </Column>
+  
+          <!-- Ticket -->
+          <Column field="ticketVevor" header="Ticket Vevor" headerStyle="width: 2rem;" style="width: 2rem;" >
+            <template #body="{data, field}">
+                <div class="flex items-center gap-1 ">
+                    <a v-if="data[field]" 
+                        class="text-3xs text-blue-500 hover:text-blue-700 w-full" 
+                        :href="data[field]" 
+                        style="text-decoration: underline;"target="_blank" >Ver Ticket</a>
     
-            <!-- Resolução -->
-            <Column field="resolucao" header="Resolução" headerStyle="max-width: 460px; min-width: 260px" style="width: 2.5rem;">
-              <template #body="{data, field}">
-                <div class="text-3xs text-gray-500">{{ data[field] || '' }}</div>
-              </template>
-              <template #editor="{ data, field }">
-                <Textarea v-model="data[field]" autofocus autoResize class="w-full input-cursor text-3xs"rows="1"cols="12" 
-                  style=" width: 100%; overflow-wrap: anywhere; word-break: break-all; box-sizing: border-box;"
-                  placeholder="Digite" 
+                    <span v-else class="text-3xs text-gray-400">Nenhum ticket</span>
+                    
+                    <Button icon="pi pi-pencil" class="p-button-text p-button-sm p-button-rounded" @click="editTicketField(data)"/>
+                </div>
+            </template>
+            <template #editor="{ data, field }">
+              <InputText v-model="data[field]" autofocus class="w-full input-cursor text-3xs p-0.5" placeholder="" 
                   @keydown.enter="$event.target.blur()"/>
-              </template>
-            </Column>
-    
-            <!-- Ticket -->
-            <Column field="ticketVevor" header="Ticket Vevor" headerStyle="width: 2rem;" style="width: 2rem;" >
-              <template #body="{data, field}">
-                  <div class="flex items-center gap-1 ">
-                      <a v-if="data[field]" 
-                          class="text-3xs text-blue-500 hover:text-blue-700 w-full" 
-                          :href="data[field]" 
-                          style="text-decoration: underline;"target="_blank" >Ver Ticket</a>
+            </template>
+          </Column>
+  
+          <!-- Estado -->
+          <Column field="status" header="Estado do Pedido"  style="width: 2.5rem;" bodyClass="badge-info">
+            <template #body="{ data, field }">
+                <span style="width: 100%;" class="text-sm  rounded-lg flex items-center gap-1 w-fit" >
+                    <span class="text-sm" style="font-size: small; text-align: center !important; width: 100%;">
+                        {{ data[field] }}
+                    </span>
+                </span>
+            </template>
+            <template #editor="{ data, field }">
+                <Select v-model="data[field]" class="w-full text-3xs p-0.5" :value="data[field]" :options="statusPedido" 
+                    optionLabel="label" optionValue="value" placeholder="Sel." 
+                    @change="onRowStateProgressUpdate(data)"/>
+            </template>
+          </Column>
+        </DataTable>
+      </div>
       
-                      <span v-else class="text-3xs text-gray-400">Nenhum ticket</span>
-                      
-                      <Button icon="pi pi-pencil" class="p-button-text p-button-sm p-button-rounded" @click="editTicketField(data)"/>
-                  </div>
-              </template>
-              <template #editor="{ data, field }">
-                <InputText v-model="data[field]" autofocus class="w-full input-cursor text-3xs p-0.5" placeholder="" 
-                    @keydown.enter="$event.target.blur()"/>
-              </template>
-            </Column>
-    
-            <!-- Estado -->
-            <Column field="status" header="Estado do Pedido"  style="width: 2.5rem;" bodyClass="badge-info">
-              <template #body="{ data, field }">
-                  <span style="width: 100%;" class="text-sm  rounded-lg flex items-center gap-1 w-fit" >
-                      <span class="text-sm" style="font-size: small; text-align: center !important; width: 100%;">
-                          {{ data[field] }}
-                      </span>
-                  </span>
-              </template>
-              <template #editor="{ data, field }">
-                  <Select v-model="data[field]" class="w-full text-3xs p-0.5" :value="data[field]" :options="statusPedido" 
-                      optionLabel="label" optionValue="value" placeholder="Sel." 
-                      @change="onRowStateProgressUpdate(data)"/>
-              </template>
-            </Column>
-          </DataTable>
-        </div>
-          
-        <!-- Modal de Criação -->
-        <Dialog v-model:visible="isCreateModalVisible" modal maximizable header="Adicionar Nova Devolução" :style="{ width: '50vw', padding: '1rem' }" 
-          :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
-          <Accordion value="0">
+      <!-- Modal de Criação -->
+      <Dialog v-model:visible="isCreateModalVisible" modal maximizable header="Adicionar Nova Devolução" :style="{ width: '50vw', padding: '1rem' }" 
+        :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+        <Accordion value="0">
 
-            <AccordionPanel>
-              <AccordionHeader>Dados Básicos</AccordionHeader>
-                <AccordionContent>
-                  <div class="flex flex-col gap-4">
-                    <div class="flex justify-between gap-4">
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <InputText v-model="newProductData.order_id" inputId="create_order_id" placeholder="Digite o order_id" fluid
-                              :required="false" />
-                        </IconField>
-                        <label for="create_order_id">Order ID</label>
-                      </IftaLabel>
-                    </div>
-                    <div class="flex justify-between gap-4">
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <DatePicker v-model="newProductData.date" inputId="create_date" dateFormat="dd/mm/yy" placeholder="Selecione a data" fluid :required="false" />
-                        </IconField>
-                        <label for="create_date">Data de Criação</label>
-                      </IftaLabel>
-                      
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <Textarea v-model="newProduct.origem"  class="w-full" inputId="create_origem" placeholder="Digite a origem" rows="3"
-                              :required="false" />
-                        </IconField>
-                        <label for="create_origem">Origem do Pedido</label>
-                      </IftaLabel>
-                    </div>
+          <AccordionPanel>
+            <AccordionHeader>Dados Básicos</AccordionHeader>
+              <AccordionContent>
+                <div class="flex flex-col gap-4">
+                  <div class="flex justify-between gap-4">
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <InputText v-model="newProductData.order_id" inputId="create_order_id" placeholder="Digite o order_id" fluid
+                            :required="false" />
+                      </IconField>
+                      <label for="create_order_id">Order ID</label>
+                    </IftaLabel>
                   </div>
-                </AccordionContent>
-              </AccordionPanel>
+                  <div class="flex justify-between gap-4">
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <DatePicker v-model="newProductData.date" inputId="create_date" dateFormat="dd/mm/yy" placeholder="Selecione a data" fluid :required="false" />
+                      </IconField>
+                      <label for="create_date">Data de Criação</label>
+                    </IftaLabel>
+                    
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <Textarea v-model="newProduct.origem"  class="w-full" inputId="create_origem" placeholder="Digite a origem" rows="3"
+                            :required="false" />
+                      </IconField>
+                      <label for="create_origem">Origem do Pedido</label>
+                    </IftaLabel>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionPanel>
 
-              <AccordionPanel value="1">
-                <AccordionHeader>Detalhes da Devolução</AccordionHeader>
-                <AccordionContent>
+            <AccordionPanel value="1">
+              <AccordionHeader>Detalhes da Devolução</AccordionHeader>
+              <AccordionContent>
+                <div class="flex flex-col gap-5">
+                  <div class="flex justify-between gap-6">
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <InputText v-model="newProductData.trackingNumber" inputId="create_tracking" placeholder="Digite o número de rastreamento"
+                        fluid :required="false" />
+                      </IconField>
+                      <label for="create_tracking">Tracking</label>
+                    </IftaLabel>
+                  </div>
                   <div class="flex flex-col gap-5">
                     <div class="flex justify-between gap-6">
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <InputText v-model="newProductData.trackingNumber" inputId="create_tracking" placeholder="Digite o número de rastreamento"
-                          fluid :required="false" />
-                        </IconField>
-                        <label for="create_tracking">Tracking</label>
-                      </IftaLabel>
-                    </div>
-                    <div class="flex flex-col gap-5">
-                      <div class="flex justify-between gap-6">
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <InputText v-model="newProductData.motivoDevolucao" inputId="create_reason" placeholder="Digite o motivo" class="w-full"
-                          :required="false" />
-                        </IconField>
-                        <label for="create_reason" class="font-medium">Motivo da Devolução</label>
-                      </IftaLabel>
-                    </div>
-                    </div>
-                    
-                    <div class="flex justify-between gap-4">
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <InputText v-model="newProductData.ticketVevor" inputId="create_ticket" placeholder="Insira a Url" fluid :required="false" />
-                        </IconField>
-                        <label for="create_ticket">Ticket Vevor> </label>
-                      </IftaLabel>
-                    </div>
-                    
-                    <div class="flex justify-between gap-4">
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <Textarea v-model="newProductData.trackingStatus" inputId="create_tracking_status" placeholder="Selecione o status"
-                          fluid rows="3" :required="false" />
-                        </IconField>
-                        <label for="create_tracking_status">Status do Tracking</label>
-                      </IftaLabel>
-                      
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <InputNumber v-model="newProductData.valorProduto" inputId="create_refund" mode="currency" currency="EUR" 
-                          locale="de-DE" placeholder="Digite o valor" fluid
-                          :required="false" />
-                        </IconField>
-                        <label for="create_refund">Valor a Reembolsar (€)</label>
-                      </IftaLabel>
-                      <IftaLabel class="w-full">
-                        <IconField>
-                          <InputText v-model="newProductData.bankName" inputId="create_bank" placeholder="Ex: Wise" 
-                          class="w-full" />
-                        </IconField>
-                        <label for="create_bank" class="font-medium">Dados de Devolução</label>
-                      </IftaLabel>
-                    </div>
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <InputText v-model="newProductData.motivoDevolucao" inputId="create_reason" placeholder="Digite o motivo" class="w-full"
+                        :required="false" />
+                      </IconField>
+                      <label for="create_reason" class="font-medium">Motivo da Devolução</label>
+                    </IftaLabel>
                   </div>
-                </AccordionContent>
-              </AccordionPanel>
+                  </div>
+                  
+                  <div class="flex justify-between gap-4">
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <InputText v-model="newProductData.ticketVevor" inputId="create_ticket" placeholder="Insira a Url" fluid :required="false" />
+                      </IconField>
+                      <label for="create_ticket">Ticket Vevor> </label>
+                    </IftaLabel>
+                  </div>
+                  
+                  <div class="flex justify-between gap-4">
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <Textarea v-model="newProductData.trackingStatus" inputId="create_tracking_status" placeholder="Selecione o status"
+                        fluid rows="3" :required="false" />
+                      </IconField>
+                      <label for="create_tracking_status">Status do Tracking</label>
+                    </IftaLabel>
+                    
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <InputNumber v-model="newProductData.valorProduto" inputId="create_refund" mode="currency" currency="EUR" 
+                        locale="de-DE" placeholder="Digite o valor" fluid
+                        :required="false" />
+                      </IconField>
+                      <label for="create_refund">Valor a Reembolsar (€)</label>
+                    </IftaLabel>
+                    <IftaLabel class="w-full">
+                      <IconField>
+                        <InputText v-model="newProductData.bankName" inputId="create_bank" placeholder="Ex: Wise" 
+                        class="w-full" />
+                      </IconField>
+                      <label for="create_bank" class="font-medium">Dados de Devolução</label>
+                    </IftaLabel>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionPanel>
 
-              <AccordionPanel value="2">
-                <AccordionHeader>Informações Adicionais</AccordionHeader>
-                <AccordionContent>
-                  <div class="flex justify-between gap-7">
-                    <IftaLabel class="w-full">
-                      <IconField>
-                        <Textarea v-model="newProductData.resolucao" inputId="create_resolucao" rows="3" placeholder="Digite a Resolução" 
-                        fluid :required="false" />
-                      </IconField>
-                      <label for="create_resolucao">Resolução</label>
-                    </IftaLabel>
-                    <IftaLabel class="w-full">
-                          <IconField>
-                              <Select v-model="newProductData.status" inputId="create_status" :options="statusPedido" optionLabel="label"
-                                  optionValue="value" placeholder="Selecione o estado" 
-                                  class="w-full"
-                                  :required="false" 
-                                  />
-                          </IconField>
-                          <label for="create_status">Estado do Pedido</label>
-                    </IftaLabel>
-                    <IftaLabel class="w-full">
-                      <IconField>
-                        <Textarea v-model="newProductData.Comments" inputId="create_comments" rows="3" placeholder="Digite os comentários" 
-                        fluid :required="false" />
-                      </IconField>
-                      <label for="create_comments">Comentários</label>
-                    </IftaLabel>
-                  </div>
-                </AccordionContent>
-              </AccordionPanel>
-            </Accordion>
-            <template #footer>
-              <Button label="Cancelar" icon="pi pi-times" class="p-button-text" @click="cancelCreate" />
-              <Button label="Salvar" icon="pi pi-check" class="p-button-success" @click="newProduct" />
-            </template>
-        </Dialog>
+            <AccordionPanel value="2">
+              <AccordionHeader>Informações Adicionais</AccordionHeader>
+              <AccordionContent>
+                <div class="flex justify-between gap-7">
+                  <IftaLabel class="w-full">
+                    <IconField>
+                      <Textarea v-model="newProductData.resolucao" inputId="create_resolucao" rows="3" placeholder="Digite a Resolução" 
+                      fluid :required="false" />
+                    </IconField>
+                    <label for="create_resolucao">Resolução</label>
+                  </IftaLabel>
+                  <IftaLabel class="w-full">
+                        <IconField>
+                            <Select v-model="newProductData.status" inputId="create_status" :options="statusPedido" optionLabel="label"
+                                optionValue="value" placeholder="Selecione o estado" 
+                                class="w-full"
+                                :required="false" 
+                                />
+                        </IconField>
+                        <label for="create_status">Estado do Pedido</label>
+                  </IftaLabel>
+                  <IftaLabel class="w-full">
+                    <IconField>
+                      <Textarea v-model="newProductData.Comments" inputId="create_comments" rows="3" placeholder="Digite os comentários" 
+                      fluid :required="false" />
+                    </IconField>
+                    <label for="create_comments">Comentários</label>
+                  </IftaLabel>
+                </div>
+              </AccordionContent>
+            </AccordionPanel>
+          </Accordion>
+          <template #footer>
+            <Button label="Cancelar" icon="pi pi-times" class="p-button-text" @click="cancelCreate" />
+            <Button label="Salvar" icon="pi pi-check" class="p-button-success" @click="newProduct" />
+          </template>
+      </Dialog>
   
-      </div>   
+  
     </div>
   </template>
     
@@ -932,13 +938,6 @@
       box-shadow: none !important;
     }
     
-    :deep(.p-datatable .p-datatable-tbody > tr > td .p-textarea),
-    :deep(.p-datatable .p-datatable-tbody > tr > td .p-inputtext) {
-      outline: none !important;
-      box-shadow: none !important;
-      border: none !important;
-    }
-
     :deep(.p-button) {
       cursor: pointer !important;
     }
@@ -961,11 +960,6 @@
       border-left: none !important;
       padding-left: 0 !important;
     }
-    :deep(.p-datatable .p-datatable-tbody > tr > td.p-selection-column) {
-      border-left: none !important;
-      padding-left: 0 !important;
-    }
-    
     
     :deep(.p-datatable .p-selection-column .p-checkbox .p-checkbox-box) {
       border: none !important;
