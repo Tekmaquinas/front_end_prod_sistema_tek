@@ -11,6 +11,7 @@ const routes = [
     { meta: meta_ , sensitive: true, component: () => import('../views/Login.vue'),      name: 'Login',      path: '/login',    children: null, },
     { meta: meta_ , sensitive: true, component: () => import('../views/Leroy.vue'),      name: 'Leroy',      path: '/leroy',    children: null, },
     { meta: meta_ , sensitive: true, component: () => import('../views/Worten.vue'),     name: 'Worten',     path: '/worten',   children: null, },
+    { meta: meta_ , sensitive: true, component: () => import('../views/Carrefour.vue'),  name: 'Carrefour',  path: '/carrefour',children: null, },
     { meta: meta_ , sensitive: true, component: () => import('../views/Profile.vue'),    name: 'Profile',    path: '/profile',  children: null, },
     { meta: meta_ , sensitive: true, component: () => import('../views/Membros.vue'),    name: 'Membros',    path: '/membros',  children: null, },
     { meta: meta_ , sensitive: true, component: () => import('../views/Deposito.vue'),   name: 'Deposito',   path: '/warehouse',children: null, },
@@ -56,7 +57,7 @@ const routes = [
 
     { 
         meta: meta_ , sensitive: true, component: () => import('../views/Mensagens.vue'),  name: 'Mensagens',
-        path: '/inbox/:marketplace(leroy|worten|all)/:state(pendente|nao_lidos|lidos|atencao|operador|finalizado|saved)',
+        path: '/inbox/:marketplace(leroy|worten|carrefour|all)/:state(pendente|nao_lidos|lidos|atencao|operador|finalizado|saved)',
         children: [
 
             { 

@@ -44,6 +44,12 @@ const leftItems = ref([
                         icon: 'pi pi-megaphone',
                         command: () => goTo('Worten') 
                     }
+                    ,
+                    {
+                        label: 'Carrefour ES',
+                        icon: 'pi pi-megaphone',
+                        command: () => goTo('Carrefour') 
+                    }
 
                 ],
             },
