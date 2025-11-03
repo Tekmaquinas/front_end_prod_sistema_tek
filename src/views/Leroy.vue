@@ -145,8 +145,8 @@
                     target="_blank" 
                     style="font-size: 12px; font-weight: 500; display: inline-block; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" 
                     rel="noopener noreferrer">
-                    <span v-if="data.product_title.includes('[ Tem no Armazém ] -')"
-                          v-html="data.product_title.replace('[ Tem no Armazém ] -', '<strong style=&quot;background-color:rgba(255, 213, 0, 0.183);&quot;> [ Tem no Armazém ] -</strong>')">
+                    <span v-if="data.product_title.includes('[ ATENÇÃO ] -')"
+                          v-html="data.product_title.replace('[ ATENÇÃO ] -', '<strong style=&quot;background-color:rgba(255, 213, 0, 0.183);&quot;> [ ATENÇÃO ] -</strong>')">
                     </span>
                     <span v-else>
                       {{ data.product_title }}
