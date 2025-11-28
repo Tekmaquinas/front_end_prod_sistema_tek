@@ -134,10 +134,10 @@
       </Column>
 
 
-      <Column field="name" header="produto" style="min-width: 150px; max-width: 360px;">
+      <Column field="product_title" header="produto" style="min-width: 150px; max-width: 360px;">
         <template #body="{ data, field }">
           <Skeleton v-if="loading" style="margin: 2px;" />
-          <template v-else-if="data['thumb'] != null">
+          <template v-else>
             <!-- Link do título com truncamento -->
               <div style="line-height: 15px;"> 
                 <a 
