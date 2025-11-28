@@ -134,10 +134,10 @@
       </Column>
 
 
-      <Column field="name" header="produto" style="min-width: 150px; max-width: 360px;">
+      <Column field="product_title" header="produto" style="min-width: 150px; max-width: 360px;">
         <template #body="{ data, field }">
           <Skeleton v-if="loading" style="margin: 2px;" />
-          <template v-else-if="data['thumb'] != null">
+          <template v-else>
             <!-- Link do título com truncamento -->
               <div style="line-height: 15px;"> 
                 <a 
@@ -145,8 +145,8 @@
                     target="_blank" 
                     style="font-size: 12px; font-weight: 500; display: inline-block; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" 
                     rel="noopener noreferrer">
-                    <span v-if="data.product_title.includes('[ ATENÇÃO ] -')"
-                          v-html="data.product_title.replace('[ ATENÇÃO ] -', '<strong style=&quot;background-color:rgba(255, 213, 0, 0.183);&quot;> [ ATENÇÃO ] -</strong>')">
+                    <span v-if="data.product_title.includes('[ Tem no Depósito ] -')"
+                          v-html="data.product_title.replace('[ Tem no Depósito ]', '<strong style=&quot;background-color:rgba(255, 213, 0, 0.183);&quot;> [ Tem no Depósito ] </strong>')">
                     </span>
                     <span v-else>
                       {{ data.product_title }}
