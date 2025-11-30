@@ -97,13 +97,14 @@
       <Column field="order_id" header="Order ID"  style="min-width: 50px;  max-width: 390px; width: 90px; align-self: center;">
         <template #body="{ data, field }" >
           <Skeleton v-if="loading" style="margin: 2px;"/>
-          <div v-else>
+          <div v-else >
             <span class="locale">{{ data['locale'] }}</span>
             <a  :href="`${base_redirect}/mmp/shop/order/${data[field]}`" target="_blank" rel="noopener noreferrer" style="font-size: 12px;">{{ data[field] }}</a>
             <p style="font-size: x-small;">
-              {{ data['created_date'] }} <i v-if="data.shipping_tracking === '10954001468219DE'" v-tooltip.top="{ value: 'Tracking Fake',pt: {text: '!bg-primary !text-primary-contrast !font-medium'}}" class="pi pi-info-circle"  style="color: blue; font-size: x-small; " />
+              {{ data['created_date'] }} <i v-if="data.is_fake_tracking == true" v-tooltip.top="{ value: 'Tracking Fake',pt: {text: '!bg-primary !text-primary-contrast !font-medium'}}" class="pi pi-info-circle"  style="color: blue; font-size: x-small; " />
             </p>
           </div>
+          
         </template>
       </Column>
 
