@@ -101,7 +101,7 @@
             <span class="locale">{{ data['locale'] }}</span>
             <a  :href="`${base_redirect}/mmp/shop/order/${data[field]}`" target="_blank" rel="noopener noreferrer" style="font-size: 12px;">{{ data[field] }}</a>
             <p style="font-size: x-small;">
-              {{ data['created_date'] }} <i v-if="data.is_fake_tracking == true" v-tooltip.top="{ value: 'Tracking Fake',pt: {text: '!bg-primary !text-primary-contrast !font-medium'}}" class="pi pi-info-circle"  style="color: blue; font-size: x-small; " />
+              {{ data['created_date'] }} <i v-if="data.is_fake_tracking === true" v-tooltip.top="{ value: 'Tracking Fake',pt: {text: '!bg-primary !text-primary-contrast !font-medium'}}" class="pi pi-info-circle"  style="color: blue; font-size: x-small; " />
             </p>
           </div>
           
